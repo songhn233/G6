@@ -69,16 +69,14 @@ export default {
     if (
       (graphCanvasBBox.minX <= width + expandWidth &&
         graphCanvasBBox.minX + dx > width + expandWidth) ||
-      (graphCanvasBBox.maxX + expandWidth >= 0 &&
-        graphCanvasBBox.maxX + expandWidth + dx < 0)
+      (graphCanvasBBox.maxX + expandWidth >= 0 && graphCanvasBBox.maxX + expandWidth + dx < 0)
     ) {
       dx = 0;
     }
     if (
       (graphCanvasBBox.minY <= height + expandHeight &&
         graphCanvasBBox.minY + dy > height + expandHeight) ||
-      (graphCanvasBBox.maxY + expandHeight >= 0 &&
-        graphCanvasBBox.maxY + expandHeight + dy < 0)
+      (graphCanvasBBox.maxY + expandHeight >= 0 && graphCanvasBBox.maxY + expandHeight + dy < 0)
     ) {
       dy = 0;
     }
@@ -86,7 +84,7 @@ export default {
   },
   onTouchStart(e: IG6GraphEvent) {
     const self = this as any;
-    const touches = (e.originalEvent as any).touches;
+    const touches = (e.originalEvent as TouchEvent).touches;
     const event1 = touches[0];
     const event2 = touches[1];
 
@@ -155,7 +153,7 @@ export default {
   },
   onTouchMove(e: IG6GraphEvent) {
     const self = this as any;
-    const touches = (e.originalEvent as any).touches;
+    const touches = (e.originalEvent as TouchEvent).touches;
     const event1 = touches[0];
     const event2 = touches[1];
 

@@ -52,6 +52,53 @@ describe('drag-node', () => {
     expect(matrix[7]).toEqual(70);
     graph.destroy();
   });
+
+  it('drag node when touch', () => {
+    const graph: Graph = new Graph({
+      container: div,
+      width: 500,
+      height: 500,
+      modes: {
+        default: [
+          {
+            type: 'drag-node',
+            enableDelegate: true,
+          },
+        ],
+      },
+    });
+    const data = {
+      nodes: [
+        {
+          id: 'node',
+          x: 50,
+          y: 50,
+        },
+      ],
+    };
+    graph.data(data);
+    graph.render();
+    const node = graph.addItem('node', {
+      color: '#666',
+      x: 50,
+      y: 50,
+      r: 20,
+      style: { lineWidth: 2, fill: '#666' },
+    });
+    graph.emit('node:touchstart', { x: 100, y: 100, item: node });
+    graph.emit('node:touchmove', { x: 120, y: 120, item: node });
+    const dragMatrix = node.get('group').getMatrix();
+    expect(dragMatrix[6]).toEqual(50);
+    expect(dragMatrix[7]).toEqual(50);
+
+    graph.emit('node:touchend', { x: 120, y: 120, item: node });
+    const matrix = node.get('group').getMatrix();
+    expect(matrix[0]).toEqual(1);
+    expect(matrix[6]).toEqual(70);
+    expect(matrix[7]).toEqual(70);
+    graph.destroy();
+  });
+
   it('drag locked node', () => {
     const graph: Graph = new Graph({
       container: div,
@@ -315,29 +362,20 @@ describe('drag-node', () => {
     });
     const edge = graph.addItem('edge', { source: 'source', target: 'target' });
 
-    let path = edge
-      .get('group')
-      .get('children')[0]
-      .attr('path');
+    let path = edge.get('group').get('children')[0].attr('path');
     expect(path[0][1]).toEqual(57.77817459305202);
     expect(path[0][2]).toEqual(57.77817459305202);
     expect(path[1][1]).toEqual(289);
     expect(path[1][2]).toEqual(300);
     graph.emit('node:dragstart', { x: 100, y: 100, item: source });
     graph.emit('node:drag', { x: 120, y: 120, item: source });
-    path = edge
-      .get('group')
-      .get('children')[0]
-      .attr('path');
+    path = edge.get('group').get('children')[0].attr('path');
     expect(path[0][1]).toEqual(57.77817459305202);
     expect(path[0][2]).toEqual(57.77817459305202);
     expect(path[1][1]).toEqual(289);
     expect(path[1][2]).toEqual(300);
     graph.emit('node:dragend', { x: 140, y: 140, item: source });
-    path = edge
-      .get('group')
-      .get('children')[0]
-      .attr('path');
+    path = edge.get('group').get('children')[0].attr('path');
     expect(path[0][1]).toEqual(97.77817459305203);
     expect(path[0][2]).toEqual(97.77817459305203);
     expect(path[1][1]).toEqual(289);
@@ -413,7 +451,7 @@ describe('drag-node', () => {
       label: 'test label',
       labelCfg: { autoRotate: true },
     });
-    const label = edge.get('group').find(g => {
+    const label = edge.get('group').find((g) => {
       return g.get('className') === 'edge-label';
     });
     expect(label).not.toBe(undefined);
@@ -444,7 +482,7 @@ describe('drag-node', () => {
           {
             type: 'drag-node',
             enableDelegate: false,
-            shouldUpdate: e => {
+            shouldUpdate: (e) => {
               expect(e).not.toBe(undefined);
               return false;
             },
@@ -481,7 +519,7 @@ describe('drag-node', () => {
           {
             type: 'drag-node',
             enableDelegate: false,
-            shouldBegin: e => {
+            shouldBegin: (e) => {
               expect(e).not.toBe(undefined);
               return false;
             },
@@ -698,7 +736,7 @@ describe('drag-node', () => {
     graph.data(data);
     graph.render();
 
-    graph.on('node:click', e => {
+    graph.on('node:click', (e) => {
       // console.log(e);
       // console.log(graph.getNodes()[0].get('group').get('children')[1]);
     });
@@ -809,7 +847,7 @@ describe('drag-node', () => {
       draggable: true,
       // name: 'circle2'
     });
-    canvas.on('drag', e => {
+    canvas.on('drag', (e) => {
       circle1.attr('x', e.x);
       circle1.attr('y', e.y);
     });
@@ -839,7 +877,10 @@ describe('drag-node', () => {
         { id: '915e9147', label: '分支节点3', comboId: 'c8578298', x: 500, y: 200 },
       ],
       edges: [{ id: '1a29578f', source: '4988e9a7', target: '915e9146' }],
-      combos: [{ id: 'c8578297', label: '测试分组a' }, { id: 'c8578298', label: '测试分组b' }],
+      combos: [
+        { id: 'c8578297', label: '测试分组a' },
+        { id: 'c8578298', label: '测试分组b' },
+      ],
     };
 
     const g6 = new Graph({
